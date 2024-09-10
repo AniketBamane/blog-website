@@ -1,6 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Frown } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import Form from "@/components/Form";
 
 const Authentication = () => {
   return (
@@ -38,12 +44,26 @@ const Authentication = () => {
 
           {/* Sign Up & Login Buttons */}
           <div className="flex justify-between space-x-4">
-            <Button className="w-1/2 bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-md">
+            <Dialog>
+              <DialogTrigger asChild>
+            <Button className="w-1/2 bg-black hover:bg-gray-600 text-white py-2 rounded-md">
               Sign Up
             </Button>
-            <Button className="w-1/2 bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-md">
+              </DialogTrigger>
+              <DialogContent>
+                <Form signin={false} />
+              </DialogContent>
+            </Dialog>
+            <Dialog>
+            <DialogTrigger asChild>
+            <Button className="w-1/2 bg-black hover:bg-gray-600 text-white py-2 rounded-md">
               Login
             </Button>
+            </DialogTrigger>
+              <DialogContent>
+                <Form signin={true} />
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </div>

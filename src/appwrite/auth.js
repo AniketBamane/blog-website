@@ -1,4 +1,4 @@
-import { Account, Client } from "appwrite";
+import { Account, Client, ID } from "appwrite";
 import conf from "../config/envConfig";
 
 class AuthService {
@@ -20,59 +20,54 @@ class AuthService {
    }
    async createUser({email,password,name,profileImage,bio}){
     try{
-      const user =  this.account.create(
+      const user = await this.account.create(
+        ID.unique(),
         email,
         password,
-        name,
-        profileImage,
-        bio  
+        name
       )
       if(user){
-        return this.loginUser({email,password})
+        return this.loginUser({email:email,password:password})
       }else{
-        return {
+        throw new Error({
           message:"couldn't create user !"
-        }
+        })
       }
     }catch(err){
-      return err
+      throw err
     }
    }
    async loginUser({email,password}){
     try{
       return await this.account.createEmailPasswordSession(email, password)
     }catch(err){
-      return err
+      console.log(err.message)
+      throw err
     }
    }
    
-   async verifyEmail({email}){
+   async verifyEmail(){
     try{
-      return await this.account.createVerification(email)
+      return await this.account.createVerification('http://localhost:5173/verification')
     }catch(err){
-      return err
+      throw err
     }
    }
 
-   async updateVerifyEmail({userId,secret}){
+   async updateVerification({userId,secret}){
     try{
       return await this.account.updateVerification(userId, secret)
     }catch(err){
-      return err
+      throw err
     }
    }
 
    async logout(){
     try{
-      await this.account.deleteSessions()
-      return {
-        success:true
-      }
+     return  await this.account.deleteSessions()
+
     }catch(err){
-      return {
-        message:err.message,
-        success:false
-      }
+     throw err
    }
   }
 }

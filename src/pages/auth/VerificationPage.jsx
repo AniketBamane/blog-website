@@ -1,41 +1,51 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+// src/components/Verify.js
 
-export default function VerificationPage() {
-  
+import authService from '@/appwrite/auth';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+
+const VerificationPage = () => {
+  const [verified, setVerified] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  const verifyEmail = async () => {
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const secret = urlParams.get('secret');
+      const userId = urlParams.get('userId');
+
+      if (secret && userId) {
+        await authService.updateVerification({ userId, secret });
+        setVerified(true);
+        navigate("/"); // Redirect to home or desired page
+      } else {
+        throw new Error("Missing parameters.");
+      }
+    } catch (err) {
+      setError(err.message);
+      console.error("Verification failed:", err);
+      navigate("/authentication"); // Redirect to authentication or error page
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    verifyEmail();
+  }, []);
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
-      {/* Website Name */}
-      <h1 className="text-4xl font-bold mb-2">MyBlogs</h1>
-
-      {/* Tagline */}
-      <p className="text-xl mb-8 text-gray-600">
-        Your Daily Dose of Insights and Inspiration {/* Use any tagline here */}
-      </p>
-
-      {/* Form */}
-      <div className="bg-white shadow-md rounded-lg p-6 max-w-md w-full">
-        <form>
-          {/* Email Field */}
-          <div className="mb-4">
-            <Label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-700">
-              Enter your email
-            </Label>
-            <Input
-              type="email"
-              id="email"
-              placeholder="Enter your email"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
-            />
-          </div>
-
-          {/* Submit Button */}
-          <Button type="submit" className="w-full bg-blue-500 text-white py-2 rounded-md">
-            Verify
-          </Button>
-        </form>
-      </div>
+    <div className="verification-page">
+      <h1>Verify Email</h1>
+      {loading && <p>Loading...</p>}
+      {verified && <p>Email verified successfully!</p>}
+      {error && <p>Error: {error}</p>}
+      <Button onClick={() => navigate("/authentication")}>Go to Login</Button>
     </div>
   );
-}
+};
+
+export default VerificationPage;
