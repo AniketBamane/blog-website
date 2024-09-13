@@ -8,7 +8,7 @@ const Navbar = () => {
       <Link to={"/"} className='text-3xl font-bold'>MyBlogs</Link>
       <div className='flex space-x-5'>
         <Link to={"/newly-written"} className='px-3 py-1 rounded-lg border shadow-md cursor-pointer'>Newly Written</Link>
-        <Link to={"/popular"} className='px-3 py-1 rounded-lg border shadow-md cursor-pointer'>Popular</Link>
+        <Link to={"/all-blogs"} className='px-3 py-1 rounded-lg border shadow-md cursor-pointer'>All Blogs</Link>
         <Link to={"/favourites"} className='px-3 py-1 rounded-lg border shadow-md cursor-pointer'>Favourites</Link>
       </div>
       <div className='flex space-x-5'>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   DialogContent,
   DialogHeader,
@@ -9,9 +9,9 @@ import { Label } from './ui/label';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 import authService from '@/appwrite/auth';
-import fileService from '@/appwrite/file';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
+import userService from '@/appwrite/user';
 
 
 const Form = ({ signin }) => {
@@ -47,6 +47,11 @@ const Form = ({ signin }) => {
       toast({
         title:"Sign up successfully !",
         description:'Account created successfully. A verification email has been sent.'
+      })
+      await userService.createProfile({
+        name:formData.name,
+        email:formData.email,
+        password:formData.password
       })
       await authService.verifyEmail();
     } catch (error) {

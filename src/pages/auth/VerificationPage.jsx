@@ -1,15 +1,17 @@
 // src/components/Verify.js
 
 import authService from '@/appwrite/auth';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import myContext from '@/context/myContext';
 
 const VerificationPage = () => {
   const [verified, setVerified] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const context =  useContext(myContext)
 
   const verifyEmail = async () => {
     try {
@@ -34,6 +36,9 @@ const VerificationPage = () => {
   };
 
   useEffect(() => {
+    if(context.user){
+      navigate("/") 
+    }
     verifyEmail();
   }, []);
 

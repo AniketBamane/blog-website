@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Import React Quill styles
+import { useToast } from '@/hooks/use-toast';
+import DOMPurify from 'dompurify';
+import userService from '@/appwrite/user';
+import fileService from '@/appwrite/file';
+import myContext from '@/context/myContext';
 
 // Define custom toolbar options
 const modules = {
@@ -31,9 +36,10 @@ const CreatePost = () => {
     title: '',
     content: '',
     image: null,
-    status: 'true', // default to true
+    status: true, // default to true
   });
-
+  const context  = useContext(myContext)
+  const {toast} = useToast()
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
     if (type === 'file') {
@@ -56,10 +62,37 @@ const CreatePost = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log(formData);
+    try{
+      const sanitizedContent =  DOMPurify.sanitize(formData.content)
+      console.log(typeof sanitizedContent , sanitizedContent);
+      const fileId = await fileService.uploadFile({image:formData.image})
+      const createdBlog = await userService.createBlogDocument({
+        title: formData.title,
+        content: sanitizedContent,
+        image: fileId.$id,
+        status: formData.status, 
+        author:context.user.$id
+      })
+      if(createdBlog){
+        toast({
+          title: 'Success',
+          description: 'Blog created successfully',
+        })
+        setFormData({title: '', content: '', image: null, status: true}); // Reset form
+      }else{
+        toast({
+          title: 'Error',
+          description: 'Oops ! something went wrong ,Failed to create blog , Please try again !',
+        })
+      }
+    }catch(err){
+      toast({
+        title: 'Error',
+        description: err.message,
+      })
+    }
   };
 
   return (
@@ -106,8 +139,8 @@ const CreatePost = () => {
                 type="radio"
                 id="published"
                 name="status"
-                value="true"
-                checked={formData.status === 'true'}
+                value={true}
+                checked={formData.status}
                 onChange={handleChange}
                 className="mr-2"
               />
@@ -118,8 +151,8 @@ const CreatePost = () => {
                 type="radio"
                 id="draft"
                 name="status"
-                value="false"
-                checked={formData.status === 'false'}
+                value={false}
+                checked={!formData.status}
                 onChange={handleChange}
                 className="mr-2"
               />

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Input } from '@/components/ui/input'; // Adjust import based on your Input component
 import { Button } from '@/components/ui/button'; // Adjust import based on your Button component
+import { useToast } from '@/hooks/use-toast';
+import userService from '@/appwrite/user';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -8,6 +10,7 @@ const Contact = () => {
     email: '',
     description: '',
   });
+  const {toast} = useToast()
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -17,10 +20,36 @@ const Contact = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    console.log(formData);
-    // Handle form submission logic (e.g., send data to server)
+    try{
+      const contact = await userService.uploadContact({
+        name: formData.name,
+        email: formData.email,
+        message: formData.description,
+      })
+      if(contact){
+        toast({
+          title: 'Success',
+          description: 'Your message has been sent successfully.',
+        })
+        setFormData({
+          name: '',
+          email: '',
+          description: '',
+        });
+      }else{
+        toast({
+          title: 'Error',
+          description: 'Failed to send your message. Please try again later.',
+        })
+      }
+    }catch(err){
+      toast({
+        title: 'Error',
+        description: err.message,
+      })
+    }
   };
 
   return (

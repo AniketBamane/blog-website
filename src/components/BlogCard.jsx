@@ -1,30 +1,18 @@
 import React from 'react';
-import { Heart } from 'lucide-react'; // Lucide react icon
-import { Button } from '@/components/ui/button'; // Assuming you have this or adjust import
+import { useNavigate } from 'react-router-dom';
 
-const BlogCard = ({ blogImage, blogTitle, authorImage, authorName, onAddToFavorites }) => {
+const BlogCard = ({ blogImage, blogTitle ,id }) => {
+  const navigate = useNavigate()
   return (
-    <div className="bg-white shadow-md rounded-lg overflow-hidden ">
-      <img src={blogImage} alt={blogTitle} className="w-full h-48 object-cover" />
+    <div className="relative bg-white shadow-md rounded-lg overflow-hidden" >
+      <div className="group cursor-pointer" onClick={()=>{
+      navigate(`/blog/${id}`)
+    }}>
+        <img src={blogImage} alt={blogTitle} className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105" />
 
-      <div className="p-4">
-        <h2 className="text-xl font-semibold mb-2">{blogTitle}</h2>
-
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <img
-              src={authorImage}
-              alt={authorName}
-              className="w-10 h-10 rounded-full mr-3"
-            />
-            <div>
-              <p className="text-sm font-medium text-gray-700">{authorName}</p>
-            </div>
-          </div>
-
-          <Button onClick={onAddToFavorites} variant="ghost">
-            <Heart  className="w-6 h-6 text-gray-500 hover:text-red-500" />
-          </Button>
+        {/* Overlay div for dark background on hover */}
+        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+          <h2 className="text-white text-xl font-semibold mb-2">{blogTitle}</h2>
         </div>
       </div>
     </div>

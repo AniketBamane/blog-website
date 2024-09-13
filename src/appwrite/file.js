@@ -24,7 +24,7 @@ class FileService{
 
    getFilePreview({fildId}){
     try{
-      return  this.storage.getFilePreview(conf.appwriteStorage, fildId)
+      return this.storage.getFilePreview(conf.appwriteStorage, fildId)
     }catch(err){
       throw err
     }

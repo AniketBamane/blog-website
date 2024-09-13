@@ -65,7 +65,6 @@ class AuthService {
    async logout(){
     try{
      return  await this.account.deleteSessions()
-
     }catch(err){
      throw err
    }
