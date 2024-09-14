@@ -3,6 +3,7 @@ import { Input } from '@/components/ui/input'; // Adjust import based on your In
 import { Button } from '@/components/ui/button'; // Adjust import based on your Button component
 import { useToast } from '@/hooks/use-toast';
 import userService from '@/appwrite/user';
+import LoadingProcess from '@/components/LoadingProcess';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ const Contact = () => {
     description: '',
   });
   const {toast} = useToast()
+  const [loading,setLoading] = useState(false)
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,6 +24,7 @@ const Contact = () => {
 
   const handleSubmit = async(e) => {
     e.preventDefault();
+    setLoading(true)
     try{
       const contact = await userService.uploadContact({
         name: formData.name,
@@ -49,11 +52,13 @@ const Contact = () => {
         title: 'Error',
         description: err.message,
       })
+    }finally{
+      setLoading(false)
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 py-10 px-4">
+   loading?  <LoadingProcess page={"contact"} />:  <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 py-10 px-4">
       <div className="bg-white shadow-md rounded-lg max-w-4xl w-full p-6 md:p-10 space-y-6">
         {/* Header */}
         <h1 className="text-3xl font-semibold text-center text-gray-800">
@@ -85,6 +90,7 @@ const Contact = () => {
               type="text"
               value={formData.name}
               onChange={handleChange}
+              disabled={loading}
               className="w-full px-4 py-2 border rounded-lg"
               required
             />
@@ -100,6 +106,7 @@ const Contact = () => {
               name="email"
               type="email"
               value={formData.email}
+              disabled={loading}
               onChange={handleChange}
               className="w-full px-4 py-2 border rounded-lg"
               required
@@ -119,13 +126,16 @@ const Contact = () => {
               name="description"
               value={formData.description}
               onChange={handleChange}
+              disabled={loading}
               className="w-full px-4 py-2 border rounded-lg h-32 resize-none"
               required
             ></textarea>
           </div>
 
           {/* Submit Button */}
-          <Button type="submit" className="w-full py-2 bg-black text-white rounded-lg">
+          <Button type="submit" className="w-full py-2 bg-black text-white rounded-lg" 
+              disabled={loading}
+          >
             Submit
           </Button>
         </form>

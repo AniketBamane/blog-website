@@ -13,18 +13,17 @@ import Contact from './pages/home/Contact'
 import Profile from './pages/home/Profile'
 import CreatePost from './pages/home/CreatePost'
 import BlogPage from './pages/home/BlogPage'
+import NotFound from './pages/NotFound'
 
 function App() {
 
   return (
    <Routes>
-    
+   <Route element={<NormalLayout />}>
    <Route element={<AuthLayout />}>
     <Route path='/authentication' element={<Authentication />} />
     <Route path='/verification' element={<VerificationPage />} />
    </Route>
-  
-   <Route element={<NormalLayout />}>
     <Route path='/' element={<Home />} />
     <Route path='/newly-written' element={<NewlyWritten />}  />
     <Route path='/all-blogs' element={<Popular/>}  />
@@ -34,6 +33,7 @@ function App() {
     <Route path='/create-post' element={<CreatePost />} />
     <Route path='/blog/:id' element={<BlogPage />} />
     </Route>
+    <Route path='*' element={<NotFound/>} />
    </Routes>
   )
 }

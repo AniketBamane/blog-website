@@ -1,5 +1,6 @@
 import userService from '@/appwrite/user'
 import CardGird from '@/components/CardGird'
+import Loading from '@/components/Loading'
 import SafeLayout from '@/components/SafeLayout'
 import conf from '@/config/envConfig'
 import { useToast } from '@/hooks/use-toast'
@@ -38,7 +39,7 @@ const Popular = () => {
 
   },[])
   return (
-   loading ? <h3>Loading ...</h3> : <CardGird cards={blogs} />
+   loading ? <Loading /> : <CardGird cards={blogs} />
   )
 }
 

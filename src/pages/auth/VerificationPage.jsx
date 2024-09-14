@@ -11,7 +11,7 @@ const VerificationPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const context =  useContext(myContext)
+  const context = useContext(myContext)
 
   const verifyEmail = async () => {
     try {
@@ -22,6 +22,7 @@ const VerificationPage = () => {
       if (secret && userId) {
         await authService.updateVerification({ userId, secret });
         setVerified(true);
+        context.setShowNavbar(true)
         navigate("/"); // Redirect to home or desired page
       } else {
         throw new Error("Missing parameters.");
@@ -36,9 +37,6 @@ const VerificationPage = () => {
   };
 
   useEffect(() => {
-    if(context.user){
-      navigate("/") 
-    }
     verifyEmail();
   }, []);
 

@@ -18,9 +18,14 @@ const Profile = () => {
   const {toast} = useToast()
   const navigate = useNavigate()
   const context = useContext(myContext)
-  const [loading,setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
 
   const handleLogout = async()=>{
+    setLoading(true)
+    toast({
+      title:"Logging out ....",
+      description:"please wait , logging out ..."
+    })
     try{
       await authService.logout()
       toast({
@@ -28,33 +33,8 @@ const Profile = () => {
         description:"You have successfully logged out"
       })
       context.setUser(null)
+      context.setShowNavbar(false)
       navigate("/authentication")
-    }catch(err){
-      toast({
-        title:"Error",
-        description:err.message
-      })
-    }
-  }
-  const fetchUserBlogs = async()=>{
-    console.log(context.user, " it is in fetch users blogs in profile ")
-    try{
-      console.log(context.user.$id)
-      const response = await userService.getAllBlogs({
-        queries:[
-          Query.equal("author",context.user?.$id)
-        ],
-        collectionId:conf.appwriteBlogsCollection
-      })
-      console.log(response.documents , " are profile ")
-      if(response.documents.length > 0){
-        context.setUser(prev => ({...prev,blogs:response.documents}))
-      }else{
-        toast({
-          title:"No Blogs",
-          description:"No blog found for this user"
-        })
-      }
     }catch(err){
       toast({
         title:"Error",
@@ -64,13 +44,42 @@ const Profile = () => {
       setLoading(false)
     }
   }
- useEffect(()=>{
-   fetchUserBlogs()
- },[])
- console.log(context.user)
+  // const fetchUserBlogs = async()=>{
+  //   console.log(context.user, " it is in fetch users blogs in profile ")
+  //   try{
+  //     console.log(context.user.$id)
+  //     const response = await userService.getAllBlogs({
+  //       queries:[
+  //         Query.equal("author",context.user?.$id)
+  //       ],
+  //       collectionId:conf.appwriteBlogsCollection
+  //     })
+  //     console.log(response.documents , " are profile ")
+  //     if(response.documents.length > 0){
+  //       context.setUser(prev => ({...prev,blogs:response.documents}))
+  //     }else{
+  //       toast({
+  //         title:"No Blogs",
+  //         description:"No blog found for this user"
+  //       })
+  //     }
+  //   }catch(err){
+  //     toast({
+  //       title:"Error",
+  //       description:err.message
+  //     })
+  //   }finally{
+  //     setLoading(false)
+  //   }
+  // }
+//  useEffect(()=>{
+//    fetchUserBlogs()
+//  },[])
+
+ console.log(context.user , "-----------is user in profile")
 
   return (
-    loading ? <Loading /> :<div className="min-h-screen bg-gray-100 py-10 px-4">
+  context.user == null ? <Loading />:<div className="min-h-screen bg-gray-100 py-10 px-4">
       {/* Profile Information */}
       <div className="bg-white shadow-md rounded-lg max-w-4xl w-full mx-auto p-6 md:p-10 space-y-6">
         <div className="flex items-center justify-around space-x-6">
@@ -89,12 +98,15 @@ const Profile = () => {
           <div className='flex space-x-2'>
             <Dialog>
               <DialogTrigger asChild>
-               <Button>Update Profile</Button>
+               <Button
+               disabled={loading}
+               >Update Profile</Button>
               </DialogTrigger>
               <NormalForm useCase={"edit-profile"} />
             </Dialog>
           <Button
           onClick={handleLogout}
+          disabled={loading}
           >Logout</Button>
           </div>
         </div>

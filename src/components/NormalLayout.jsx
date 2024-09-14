@@ -32,23 +32,28 @@ const NormalLayout = () => {
         console.log(registeredUser , " is registered user")
         console.log(registeredUser.documents[0])
         context.setUser(registeredUser.documents[0])
+        context.setShowNavbar(true)
       }else{
         context.setUser(null)
+        context.setShowNavbar(false)
         navigate('/authentication', {replace: true})
       }
     } catch (error) {
+      console.log(error)
       toast({
         title:"Error",
         description:error.message
       })
+      context.setShowNavbar(false)
       navigate("/authentication",{replace:true})
     }finally{
       setLoading(false)
     }
   }
+  console.log(context , "in context provider ")
   useEffect(()=>{
     getCurrentUser()
-  },[])
+  },[context.showNavbar])
   return (
    loading ? <Loading /> : <SafeLayout>
       <Navbar />

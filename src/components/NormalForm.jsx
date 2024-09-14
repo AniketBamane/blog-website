@@ -20,6 +20,7 @@ const NormalForm = ({ useCase }) => {
   });
   const {toast} = useToast()
   const context = useContext(myContext)
+  const [loading, setLoading] = useState(false)
 
   const handleChange = (e) => {
     const { name, value, files, type } = e.target;
@@ -31,6 +32,12 @@ const NormalForm = ({ useCase }) => {
 
   const handleSubmit = async(e) => {
     e.preventDefault();
+    setLoading(true)
+    toast({
+      title: loading? 'Loading...' : 'Updating Profile',
+      description: loading? 'Please wait...' : '',
+      duration: loading? 0 : 2000,
+    })
    try{
     console.log(formData );
     const fileId = await fileService.uploadFile({image:formData.profileImage})
@@ -62,6 +69,8 @@ const NormalForm = ({ useCase }) => {
       title: 'error',
       description: err.message,
     });
+   }finally{
+    setLoading(false)
    }
   };
 
@@ -78,6 +87,7 @@ const NormalForm = ({ useCase }) => {
                 id="name"
                 name="name"
                 type="text"
+                disabled={loading}
                 placeholder="Enter your name"
                 value={formData.name}
                 onChange={handleChange}
@@ -92,6 +102,8 @@ const NormalForm = ({ useCase }) => {
                 id="bio"
                 name="bio"
                 type="text"
+                disabled={loading}
+
                 placeholder="Enter your bio"
                 value={formData.bio}
                 onChange={handleChange}
@@ -107,12 +119,17 @@ const NormalForm = ({ useCase }) => {
                 name="profileImage"
                 type="file"
                 accept="image/*"
+                disabled={loading}
+
                 onChange={handleChange}
               />
             </div>
 
             {/* Submit Button */}
-            <Button type="submit" className="bg-black text-white w-full">
+            <Button type="submit" className="bg-black text-white w-full"
+                disabled={loading}
+            
+            >
               Submit
             </Button>
           </form>

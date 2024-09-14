@@ -12,6 +12,7 @@ import authService from '@/appwrite/auth';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import userService from '@/appwrite/user';
+import myContext from '@/context/myContext';
 
 
 const Form = ({ signin }) => {
@@ -22,6 +23,7 @@ const Form = ({ signin }) => {
   });
   const { toast } = useToast()
   const navigate = useNavigate()
+  const context = useContext(myContext)
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
@@ -54,6 +56,7 @@ const Form = ({ signin }) => {
         password:formData.password
       })
       await authService.verifyEmail();
+
     } catch (error) {
       toast({
         title:"Error",
@@ -69,6 +72,7 @@ const Form = ({ signin }) => {
           title:"Login successful!",
           description:'You have logged in successfully.'
         })
+        context.setShowNavbar(true)
         navigate("/")
       }else{
         toast({

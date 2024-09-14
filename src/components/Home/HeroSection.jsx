@@ -16,7 +16,7 @@ const HeroSection = ({setBlogs,setLoading}) => {
     setLoading(true)
     try{
       const result = await userService.getSearchedDocuments({queries:[
-        Query.search("title", search)
+        Query.search("title", search),
       ]})
       setBlogs(result.documents)
       setSearch("")
@@ -42,6 +42,7 @@ const HeroSection = ({setBlogs,setLoading}) => {
       />
       <Button onClick={handleOnSearchSubmit}><Search /></Button>
       </div>
+      <h4 className='text-sm font-semiBold text-center text-white p-2 bg-black rounded-full mt-2 shadow-lg'>Explore our vast collection of insightful and inspiring blogs, or search by title to find exactly what you're looking for!</h4>
       </div>
       <img src="https://plus.unsplash.com/premium_photo-1684581214880-2043e5bc8b8b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="" className='w-1/2  right-0 grayscale' />
     </div>

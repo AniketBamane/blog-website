@@ -54,7 +54,7 @@ class UserService {
 
   async createBlogDocument({title,content,image,status,author}){
     try{
-      return await this.databases.createDocument(
+      const document =  await this.databases.createDocument(
         conf.appwriteDatabase,
         conf.appwriteBlogsCollection,
         ID.unique(),
@@ -67,6 +67,21 @@ class UserService {
           createdAt: Math.floor(Date.now() / 1000)
         }
       )
+      console.log(document , " is created document")
+      console.log("1")
+      const user =  await this.getProfile(author)
+      // console.log("2")
+      // const updatedUser = {...user, blogs:[...user.blogs,document.$id]}
+      // console.log(user," is current user ")
+      // console.log(updatedUser," is updated user ")
+      // console.log("3")
+      // console.log(user.$id,updatedUser.$id)
+      const newUser = await this.updateProfile(user.$id,{
+        blogs:[...user.blogs,document.$id]
+      })
+      console.log(newUser," is new user ")
+      console.log("4")
+      return document
     }catch(err){
       throw err
     }
@@ -102,15 +117,17 @@ class UserService {
   }
 
   async updateProfile(documentId,data){
+    console.log(conf)
     console.log(documentId,data)
     try{
-      return await  this.databases.updateDocument(
+      return await this.databases.updateDocument(
         conf.appwriteDatabase,
         conf.appwriteUsersCollection,
         documentId,
         data
       )
     }catch(err){
+      console.log(err)
       throw err
     }
   }
@@ -121,6 +138,23 @@ class UserService {
         conf.appwriteUsersCollection, // collectionId
         id, // documentId
     );
+    }catch(err){
+      throw err
+    }
+  }
+
+  async addToFavourite({userId,documentId}){
+    try{
+      const currentUser = await this.getProfile(userId)
+      console.log(currentUser)
+      if(currentUser.favourites.includes(documentId)){
+         currentUser.favourites.filter(fav=> fav.$id != documentId)
+      }else{
+        currentUser.favourites.push(documentId)
+      }
+      return await this.updateProfile(currentUser.$id,{
+        favourites: currentUser.favourites
+      })
     }catch(err){
       throw err
     }

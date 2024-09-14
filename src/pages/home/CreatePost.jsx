@@ -9,6 +9,7 @@ import DOMPurify from 'dompurify';
 import userService from '@/appwrite/user';
 import fileService from '@/appwrite/file';
 import myContext from '@/context/myContext';
+import LoadingProcess from '@/components/LoadingProcess';
 
 // Define custom toolbar options
 const modules = {
@@ -40,6 +41,7 @@ const CreatePost = () => {
   });
   const context  = useContext(myContext)
   const {toast} = useToast()
+  const [loading,setLoading] = useState(false)
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
     if (type === 'file') {
@@ -64,6 +66,7 @@ const CreatePost = () => {
 
   const handleSubmit = async(e) => {
     e.preventDefault();
+    setLoading(true)
     try{
       const sanitizedContent =  DOMPurify.sanitize(formData.content)
       console.log(typeof sanitizedContent , sanitizedContent);
@@ -75,7 +78,12 @@ const CreatePost = () => {
         status: formData.status, 
         author:context.user.$id
       })
+      console.log(createdBlog , "-----------------------created blog")
       if(createdBlog){
+        context.setUser(prev=>({
+          ...prev,
+          blogs: [...prev.blogs, createdBlog],
+        }))
         toast({
           title: 'Success',
           description: 'Blog created successfully',
@@ -92,16 +100,20 @@ const CreatePost = () => {
         title: 'Error',
         description: err.message,
       })
+    }finally{
+      setLoading(false)
     }
   };
 
   return (
-    <div className="max-w-3xl mx-auto mt-10">
+   loading? <LoadingProcess page={"create-post"} />  : <div className="max-w-3xl mx-auto mt-10">
             
       <form onSubmit={handleSubmit} className="space-y-3">
 <div className='flex justify-between'>
 <h1 className="text-2xl font-bold mb-6">Create a New Blog</h1>
-<Button type="submit">Create Blog</Button>
+<Button type="submit" 
+  disabled={loading}
+>Create Blog</Button>
 </div>
         {/* Title Input */}
         <div className="space-y-2">
@@ -110,6 +122,7 @@ const CreatePost = () => {
             id="title"
             name="title"
             type="text"
+            disabled={loading}
             placeholder="Enter blog title"
             value={formData.title}
             onChange={handleChange}
@@ -126,6 +139,7 @@ const CreatePost = () => {
             id="image"
             name="image"
             type="file"
+            disabled={loading}
             onChange={handleChange}
           />
         </div>
@@ -140,6 +154,7 @@ const CreatePost = () => {
                 id="published"
                 name="status"
                 value={true}
+              disabled={loading}
                 checked={formData.status}
                 onChange={handleChange}
                 className="mr-2"
@@ -152,6 +167,7 @@ const CreatePost = () => {
                 id="draft"
                 name="status"
                 value={false}
+              disabled={loading}
                 checked={!formData.status}
                 onChange={handleChange}
                 className="mr-2"
@@ -166,6 +182,7 @@ const CreatePost = () => {
           <ReactQuill
             id="content"
             theme="snow"
+            disabled={loading}
             value={formData.content}
             onChange={handleContentChange}
             placeholder="Write your blog content here..."

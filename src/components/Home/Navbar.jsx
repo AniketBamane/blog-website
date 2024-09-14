@@ -1,10 +1,12 @@
+import myContext from '@/context/myContext'
 import { Pencil } from 'lucide-react'
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useContext, useEffect, useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 
 const Navbar = () => {
+  const context = useContext(myContext)
   return (
-    <div className='w-full flex justify-between px-2 py-3 border-b-8'>
+   context.showNavbar && <div className='w-full flex justify-between px-2 py-3 border-b-8'>
       <Link to={"/"} className='text-3xl font-bold'>MyBlogs</Link>
       <div className='flex space-x-5'>
         <Link to={"/newly-written"} className='px-3 py-1 rounded-lg border shadow-md cursor-pointer'>Newly Written</Link>

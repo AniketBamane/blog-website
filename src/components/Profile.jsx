@@ -28,7 +28,7 @@ const Profile = ({blog , setBlog}) => {
     fetchAuthorDetails()
   },[])
   return (
-   loading? <h2>Loading profile....</h2> : <div className="flex items-center">
+   loading? <h2 className='font-thin text-lg'>Loading Author ...</h2> : <div className="flex items-center">
     {/* Author Pic */}
     {blog.authorPic && (
         <img
@@ -39,7 +39,7 @@ const Profile = ({blog , setBlog}) => {
     )}
     {/* Author Name */}
     <div>
-        <h2 className="text-xl font-semibold">{blog.authorName}</h2>
+        <h2 className="text-sm  font-semibold">written by :</h2>
         <h2 className="text-md font-semibold">{blog.authorEmail}</h2>
     </div>
 </div>

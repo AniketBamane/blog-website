@@ -1,5 +1,6 @@
 import userService from '@/appwrite/user'
 import CardGird from '@/components/CardGird'
+import Loading from '@/components/Loading'
 import conf from '@/config/envConfig'
 import { useToast } from '@/hooks/use-toast'
 import { Query } from 'appwrite'
@@ -42,7 +43,11 @@ const NewlyWritten = () => {
 getNewBlogs()
   },[])
   return (
-    loading ? <h1>Loading ....</h1> :<CardGird cards={blogs} />
+    loading ? <Loading /> :
+    <div>
+      <h2 className='font-thin text-xl'>Blogs created in last 24 hours ....</h2>
+      <CardGird cards={blogs} />
+    </div>
   )
 }
 

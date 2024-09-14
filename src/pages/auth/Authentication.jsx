@@ -7,17 +7,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import Form from "@/components/Form";
-import myContext from "@/context/myContext";
-import { useNavigate } from "react-router-dom";
 
 const Authentication = () => {
-  const context = useContext(myContext)
-  const navigate = useNavigate()
-  useEffect(()=>{
-    if(context.user){
-      navigate("/")
-    }
-  },[])
   return (
     <div className="flex min-h-screen  bg-gray-100">
       {/* Left Section: Image */}
