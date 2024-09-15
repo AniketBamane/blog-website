@@ -60,7 +60,4 @@ cd blog-website</code></pre>
 Contributions are welcome! Please fork the repository and create a pull request with a clear description of your changes.
 </p>
 
-<h2>License</h2>
-<p>
-This project is licensed under the MIT License. See the <a href="LICENSE">LICENSE</a> file for more details.
-</p>
+
